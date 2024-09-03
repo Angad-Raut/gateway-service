@@ -1,0 +1,10 @@
+version: '1.0'
+services:
+  api-gateway-app:
+    container_name: gatewayContainer
+    image: api-gateway
+    restart: always
+    build: .
+    ports:
+      - 1995:1995
+
