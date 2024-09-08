@@ -1,9 +1,4 @@
 pipeline {
-    environment {
-       registry = "9766945760/api-gateway"
-       registryCredential = 'dockerhub-credentials'
-       dockerImage = ''
-    }
     agent any
     tools {
         jdk 'Jdk17'
@@ -32,31 +27,28 @@ pipeline {
                 bat 'mvn clean package'
             }
         }
-        stage('Docker Build') {
-            steps{
-                script {
-                    dockerImage = docker.build registry
-                    echo 'Build Image Completed'
-                }
-            }
-        }
-        stage('Docker Push') {
+        stage('Archive Artifacts'){
             steps {
-                script {
-                    docker.withRegistry( '', registryCredential ) {
-                       dockerImage.push('latest')
-                       echo 'Push Image Completed'
-                    }
-                }
+                archiveArtifacts artifacts: 'target/*.war'
             }
         }
-        stage('Deployment') {
+        stage('Deploy on Tomcat') {
              steps {
-                  bat 'docker-compose up --build -d'
-                  echo 'SUCCESS'
-                  bat 'docker logout'
-                  bat 'docker rmi 9766945760/api-gateway:latest'
-             }
+                  deploy adapters: [tomcat9(url: 'http://localhost:8085/',
+                      credentialsId: 'tomcat-credentials')],
+                      war: 'target/*.war',
+                      contextPath: 'gateway-service'
+            }
+        }
+        stage('Notification'){
+             steps {
+                   emailext(
+                          subject: 'API Gateway Microservice Deployed',
+                          body: 'API Gateway microservice successfully deployed on tomcat server',
+                          to: 'angadraut89@gmail.com'
+                   )
+                   echo 'SUCCESS'
+            }
         }
     }
 }
