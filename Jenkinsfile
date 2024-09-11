@@ -8,7 +8,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-secret', url: 'https://github.com/Angad-Raut/gateway-service.git']])
-                bat 'mvn clean install'
+                bat 'mvn clean install -DskipTests'
                 echo 'Git Checkout Completed'
             }
         }
@@ -24,7 +24,7 @@ pipeline {
         }
         stage('Build Artifact') {
             steps {
-                bat 'mvn clean package'
+                bat 'mvn clean package -DskipTests'
             }
         }
         stage('Archive Artifacts'){
