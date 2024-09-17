@@ -1,10 +1,53 @@
+server:
+  port: 1995
+
 spring:
   application:
     name: gateway-service
-  config:
-    import: "optional:configserver:http://localhost:8888"
+  main:
+    web-application-type: none
   cloud:
     gateway:
+      routes:
+        - id: authentication-service
+          uri: lb://AUTHENTICATION-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: company-service
+          uri: lb://COMPANY-SERVICE
+          predicates:
+            - Path=/companyDetails/**
+
+        - id: document-service
+          uri: lb://DOCUMENT-SERVICE
+          predicates:
+            - Path=/documents/**
+            - Path=/companyDocuments/**
+
+        - id: expense-service
+          uri: lb://EXPENSE-SERVICE
+          predicates:
+            - Path=/expenses/**
+
+        - id: income-service
+          uri: lb://INCOME-SERVICE
+          predicates:
+            - Path=/incomes/**
+
+        - id: report-service
+          uri: lb://REPORT-SERVICE
+          predicates:
+            - Path=/reports/**
+
+        - id: resume-service
+          uri: lb://RESUME-SERVICE
+          predicates:
+            - Path=/educationDetails/**
+            - Path=/employeeDetails/**
+            - Path=/projectDetails/**
+            - Path=/technoStackDetails/**
+
       globalcors:
         corsConfigurations:
           '[/**]':
@@ -24,6 +67,21 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${random.value}
     prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8086/service-registry/eureka/
+
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 app:
   jwt:
