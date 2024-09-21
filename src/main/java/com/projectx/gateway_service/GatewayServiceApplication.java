@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.config.EnableWebFlux;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import static org.springframework.http.converter.json.AbstractJsonHttpMessageCon
 
 @SpringBootApplication
 @EnableEurekaClient
+@EnableWebFlux
 public class GatewayServiceApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
@@ -30,7 +32,7 @@ public class GatewayServiceApplication extends SpringBootServletInitializer {
 		return builder.sources(GatewayServiceApplication.class);
 	}
 
-	@Bean
+	/*@Bean
 	public RestTemplate restTemplate() {
 		final RestTemplate restTemplate = new RestTemplate();
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
@@ -48,5 +50,5 @@ public class GatewayServiceApplication extends SpringBootServletInitializer {
 					new MediaType("application", "*+json", DEFAULT_CHARSET)
 			);
 			return types;
-	}
+	}*/
 }
